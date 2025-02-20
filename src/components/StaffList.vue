@@ -27,6 +27,9 @@ const staffMembers = computed(() =>
 
 const isHeadText = (member) => (member.isHead ? "Да" : "Нет");
 
+// Добавляем вычисляемое свойство staffType
+const staffType = computed(() => (props.isManager ? "врача" : "медсестру"));
+
 onMounted(() => {
   staffStore.loadDoctors();
   staffStore.loadNurses();
@@ -190,10 +193,6 @@ const closeForm = () => {
   &__row {
     &:nth-child(even) {
       background-color: #f9f9f9;
-    }
-
-    &:hover {
-      // background-color: #f1f1f1;
     }
   }
 
