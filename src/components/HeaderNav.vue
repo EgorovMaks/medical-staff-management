@@ -1,31 +1,45 @@
 <template>
   <nav class="navbar">
-    <ul>
-      <li><router-link to="/doctors">Врачи</router-link></li>
-      <li><router-link to="/nurses">Медсестры</router-link></li>
+    <ul class="navbar__list">
+      <li class="navbar__item">
+        <router-link to="/doctors" class="navbar__link">Врачи</router-link>
+      </li>
+      <li class="navbar__item">
+        <router-link to="/nurses" class="navbar__link">Медсестры</router-link>
+      </li>
     </ul>
   </nav>
 </template>
 
 <style lang="scss" scoped>
 .navbar {
-  background-color: $primary-color;
+  background-color: #007bff;
   padding: 10px;
 
-  ul {
+  &__list {
     display: flex;
     list-style: none;
     gap: 15px;
+    margin: 0;
+    padding: 0;
+  }
 
-    li {
-      a {
-        color: white;
-        text-decoration: none;
+  &__item {
+    margin: 0;
+  }
 
-        &:hover {
-          text-decoration: underline;
-        }
-      }
+  &__link {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &--active {
+      color: #ffdd57;
     }
   }
 }

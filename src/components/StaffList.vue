@@ -1,44 +1,3 @@
-<template>
-  <div class="container">
-    <h1 class="title">{{ title }}</h1>
-    <button @click="openForm" class="add-button">
-      Добавить {{ staffType }}
-    </button>
-    <table class="staff-table">
-      <thead>
-        <tr>
-          <th>ФИО</th>
-          <th>Отделение</th>
-          <th v-if="isDoctor">Заведующий</th>
-          <th>Действия</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="member in staffMembers" :key="member.id">
-          <td>{{ member.name }}</td>
-          <td>{{ member.department }}</td>
-          <td v-if="isDoctor">{{ member.isHead ? "Да" : "Нет" }}</td>
-          <td>
-            <button @click="editMember(member)" class="edit-button">
-              ✏️ Редактировать
-            </button>
-            <button @click="deleteMember(member.id)" class="delete-button">
-              ❌ Удалить
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <StaffForm
-      v-if="isFormVisible"
-      @close="closeForm"
-      :isEdit="isEdit"
-      :staffMember="currentMember"
-      :isDoctor="isDoctor"
-    />
-  </div>
-</template>
-
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useStaffStore } from "../store";
@@ -50,7 +9,7 @@ const props = defineProps({
     type: String,
     required: true,
   },
-  isDoctor: {
+  isManager: {
     type: Boolean,
     default: true,
   },
@@ -63,7 +22,7 @@ const currentMember = ref(null);
 const { doctors, nurses } = storeToRefs(staffStore);
 
 const staffMembers = computed(() =>
-  props.isDoctor ? doctors.value : nurses.value
+  props.isManager ? doctors.value : nurses.value
 );
 
 onMounted(() => {
@@ -84,11 +43,11 @@ const editMember = (member) => {
 };
 
 const deleteMember = (memberId) => {
-  const confirmMessage = props.isDoctor
+  const confirmMessage = props.isManager
     ? "Вы уверены, что хотите удалить этого врача?"
     : "Вы уверены, что хотите удалить эту медсестру?";
   if (confirm(confirmMessage)) {
-    if (props.isDoctor) {
+    if (props.isManager) {
       staffStore.deleteDoctor(memberId);
     } else {
       staffStore.deleteNurse(memberId);
@@ -103,30 +62,112 @@ const closeForm = () => {
 };
 </script>
 
+<template>
+  <div class="staff">
+    <h1 class="staff__title">{{ title }}</h1>
+    <button @click="openForm" class="staff__add-button">
+      Добавить {{ staffType }}
+    </button>
+    <table class="staff-table">
+      <thead class="staff-table__header">
+        <tr class="staff-table__row">
+          <th class="staff-table__cell">ФИО</th>
+          <th class="staff-table__cell">Отделение</th>
+          <th v-if="isManager" class="staff-table__cell">Заведующий</th>
+          <th class="staff-table__cell">Действия</th>
+        </tr>
+      </thead>
+      <tbody class="staff-table__body">
+        <tr
+          v-for="member in staffMembers"
+          :key="member.id"
+          class="staff-table__row"
+        >
+          <td class="staff-table__cell">{{ member.name }}</td>
+          <td class="staff-table__cell">{{ member.department }}</td>
+          <td v-if="isManager" class="staff-table__cell">
+            {{ member.isHead ? "Да" : "Нет" }}
+          </td>
+          <td class="staff-table__cell staff-table__cell--actions">
+            <button
+              @click="editMember(member)"
+              class="staff__button staff__button--edit"
+            >
+              ✏️ Редактировать
+            </button>
+            <button
+              @click="deleteMember(member.id)"
+              class="staff__button staff__button--delete"
+            >
+              ❌ Удалить
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <StaffForm
+      v-if="isFormVisible"
+      @close="closeForm"
+      :isEdit="isEdit"
+      :staffMember="currentMember"
+      :isManager="isManager"
+    />
+  </div>
+</template>
+
 <style lang="scss" scoped>
-.container {
+.staff {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-}
 
-h1 {
-  text-align: center;
-}
+  &__title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+  }
 
-.add-button {
-  margin-bottom: 20px;
-  padding: 10px 15px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
+  &__add-button {
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 
-.add-button:hover {
-  background-color: #0056b3;
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+
+  &__button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+
+    &--edit {
+      background-color: #28a745;
+      color: white;
+
+      &:hover {
+        background-color: #218838;
+      }
+    }
+
+    &--delete {
+      background-color: #dc3545;
+      color: white;
+      margin-left: 5px;
+
+      &:hover {
+        background-color: #c82333;
+      }
+    }
+  }
 }
 
 .staff-table {
@@ -136,55 +177,32 @@ h1 {
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
 
-th,
-td {
-  border: 1px solid #ddd;
-  padding: 12px;
-  text-align: left;
-}
+  &__header {
+    background-color: #007bff;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
 
-th {
-  background-color: #007bff;
-  color: white;
-  text-transform: uppercase;
-  font-weight: bold;
-}
+  &__row {
+    &:nth-child(even) {
+      background-color: #f9f9f9;
+    }
 
-tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
+    &:hover {
+      // background-color: #f1f1f1;
+    }
+  }
 
-tr:hover {
-  background-color: #f1f1f1;
-}
+  &__cell {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
 
-.edit-button,
-.delete-button {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
-}
-
-.edit-button {
-  background-color: #28a745;
-  color: white;
-}
-
-.edit-button:hover {
-  background-color: #218838;
-}
-
-.delete-button {
-  background-color: #dc3545;
-  color: white;
-  margin-left: 5px; /* Отступ между кнопками */
-}
-
-.delete-button:hover {
-  background-color: #c82333;
+    &--actions {
+      white-space: nowrap;
+    }
+  }
 }
 </style>
