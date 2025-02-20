@@ -1,8 +1,8 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
-import { useStaffStore } from "../store";
+import { useStaffStore } from "@/store";
 import { storeToRefs } from "pinia";
-import StaffForm from "../components/StaffForm.vue";
+import StaffForm from "@/components/StaffForm.vue";
 
 const props = defineProps({
   title: {

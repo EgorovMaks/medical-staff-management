@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch } from "vue";
-import { useStaffStore } from "../store";
+import { useStaffStore } from "@/store";
 
 const emit = defineEmits(["close"]);
 
