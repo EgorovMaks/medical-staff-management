@@ -5,7 +5,7 @@ import DoctorsList from "@/views/DoctorsList.vue";
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    redirect: "/nurses", // Перенаправление на маршрут "/nurses"
+    redirect: "/nurses",
   },
   {
     path: "/nurses",
