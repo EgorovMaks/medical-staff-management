@@ -27,7 +27,6 @@ const staffMembers = computed(() =>
 
 const isHeadText = (member) => (member.isHead ? "Да" : "Нет");
 
-// Добавляем вычисляемое свойство staffType
 const staffType = computed(() => (props.isManager ? "врача" : "медсестру"));
 
 onMounted(() => {

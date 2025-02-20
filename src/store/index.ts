@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { Doctor, Nurse } from "../../types";
+import { Doctor, Nurse } from "@/store/types";
 
 export const useStaffStore = defineStore("staff", {
   state: () => ({
