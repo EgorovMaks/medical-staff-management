@@ -37,22 +37,24 @@ watch(
 );
 
 const handleSubmit = () => {
-  if (props.isEdit) {
-    if (props.isManager) {
-      staffStore.editDoctor({ ...form.value, id: props.staffMember.id });
-    } else {
-      staffStore.editNurse({ ...form.value, id: props.staffMember.id });
-    }
-  } else {
-    const newId = Math.max(...staffStore.doctors.map((d) => d.id), 0) + 1;
-    if (props.isManager) {
-      staffStore.addDoctor({ ...form.value, id: newId });
-    } else {
-      staffStore.addNurse({ ...form.value, id: newId });
-    }
-  }
-  form.value = { name: "", department: "", isHead: false };
+  const action = props.isEdit ? "edit" : "add";
+  const staffType = props.isManager ? "Doctor" : "Nurse";
+
+  const id = props.isEdit
+    ? props.staffMember.id
+    : Math.max(
+        ...staffStore[staffType.toLowerCase() + "s"].map((m) => m.id),
+        0
+      ) + 1;
+
+  staffStore[`${action}${staffType}`]({ ...form.value, id });
+
+  resetForm();
   emitClose();
+};
+
+const resetForm = () => {
+  form.value = { name: "", department: "", isHead: false };
 };
 
 const emitClose = () => {

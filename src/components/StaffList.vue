@@ -25,6 +25,8 @@ const staffMembers = computed(() =>
   props.isManager ? doctors.value : nurses.value
 );
 
+const isHeadText = (member) => (member.isHead ? "Да" : "Нет");
+
 onMounted(() => {
   staffStore.loadDoctors();
   staffStore.loadNurses();
@@ -86,7 +88,7 @@ const closeForm = () => {
           <td class="staff-table__cell">{{ member.name }}</td>
           <td class="staff-table__cell">{{ member.department }}</td>
           <td v-if="isManager" class="staff-table__cell">
-            {{ member.isHead ? "Да" : "Нет" }}
+            {{ isHeadText(member) }}
           </td>
           <td class="staff-table__cell staff-table__cell--actions">
             <button
